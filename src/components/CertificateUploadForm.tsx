@@ -102,11 +102,21 @@ export function CertificateUploadForm({ open, onOpenChange, certificate }: Certi
       setValue('file_type', ftype, { shouldValidate: true });
       setPreview(url);
       toast.success('File uploaded successfully');
-    } catch (err: any) {
-      const msg = err?.message || err?.error?.message || 'Upload failed';
-      toast.error(`Upload failed: ${msg}`);
-      console.error('Upload error:', err);
-    } finally {
+    // } catch (err: any) {
+    //   const msg = err?.message || err?.error?.message || 'Upload failed';
+    //   toast.error(`Upload failed: ${msg}`);
+    //   console.error('Upload error:', err);
+    // }
+    } catch (err: unknown) {
+  const msg =
+    err instanceof Error
+      ? err.message
+      : 'Upload failed';
+
+  toast.error(`Upload failed: ${msg}`);
+  console.error('Upload error:', err);
+}
+     finally {
       setUploading(false);
     }
   };

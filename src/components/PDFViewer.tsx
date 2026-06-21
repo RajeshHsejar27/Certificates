@@ -15,36 +15,70 @@ interface PDFViewerProps {
 }
 
 export function PDFViewer({ url, zoom }: PDFViewerProps) {
-  const [numPages, setNumPages] = useState<number>(0);
+  const [numPages, setNumPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(800);
 
   useEffect(() => {
     const updateWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.clientWidth - 48);
-      }
+      if (!containerRef.current) return;
+
+      const width = containerRef.current.clientWidth;
+
+      setContainerWidth(
+        Math.max(
+          Math.min(width - 16, 1400),
+          250
+        )
+      );
     };
+
     updateWidth();
+
+    const resizeObserver = new ResizeObserver(updateWidth);
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
     window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateWidth);
+    };
   }, []);
 
+  const pageWidth = Math.round(
+    Math.min(containerWidth * zoom, 1400)
+  );
+
   return (
-    <div ref={containerRef} className="h-full w-full">
+    <div
+      ref={containerRef}
+      className="h-full w-full overflow-auto"
+    >
       {loading && (
-        <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-muted/20">
+        <div className="flex h-full w-full flex-col items-center justify-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Loading PDF...</p>
+          <p className="text-sm text-muted-foreground">
+            Loading PDF...
+          </p>
         </div>
       )}
+
       {error ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-muted-foreground">
           <AlertTriangle className="h-10 w-10 text-destructive" />
-          <p className="text-sm font-medium">Failed to load PDF</p>
-          <p className="text-xs text-muted-foreground">Try opening the file directly</p>
+          <p className="text-sm font-medium">
+            Failed to load PDF
+          </p>
+          <p className="text-xs">
+            Try opening the file directly
+          </p>
         </div>
       ) : (
         <Document
@@ -53,22 +87,26 @@ export function PDFViewer({ url, zoom }: PDFViewerProps) {
             setNumPages(doc.numPages);
             setLoading(false);
           }}
-          onLoadError={() => {
+          onLoadError={(err) => {
+            console.error(err);
             setLoading(false);
             setError(true);
           }}
-          className="flex flex-col items-center gap-4"
+          className="flex flex-col items-center gap-6 py-4"
         >
-          {Array.from({ length: numPages }, (_, i) => (
-            <Page
-              key={i + 1}
-              pageNumber={i + 1}
-              width={containerWidth * zoom}
-              renderAnnotationLayer={true}
-              renderTextLayer={true}
-              className="shadow-lg"
-            />
-          ))}
+          {Array.from(
+            { length: numPages },
+            (_, i) => (
+              <Page
+                key={i + 1}
+                pageNumber={i + 1}
+                width={pageWidth}
+                renderAnnotationLayer
+                renderTextLayer
+                className="shadow-lg"
+              />
+            )
+          )}
         </Document>
       )}
     </div>

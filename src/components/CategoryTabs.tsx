@@ -46,24 +46,24 @@ export function CategoryTabs({ selectedCategory, onSelectCategory }: CategoryTab
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      <div className="flex flex-wrap items-center gap-2">
         <Tabs value={selectedCategory} onValueChange={onSelectCategory} className="w-auto">
-          <TabsList className="h-9 bg-transparent p-0 gap-1">
-            <TabsTrigger value="all" className="rounded-full px-4 text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          <TabsList className="h-auto min-h-9 bg-transparent p-0 gap-1 flex-wrap">
+            <TabsTrigger value="all" className="rounded-full px-3 py-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               All
             </TabsTrigger>
             {categories?.map((cat) => (
               <TabsTrigger
                 key={cat.id}
                 value={cat.id}
-                className="relative rounded-full px-4 text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="group relative rounded-full px-3 py-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 {editingId === cat.id ? (
                   <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                     <Input
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="h-6 w-24 text-xs"
+                      className="h-6 w-24 sm:w-32 text-xs"
                       autoFocus
                       onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit(cat.id)}
                     />
@@ -77,12 +77,12 @@ export function CategoryTabs({ selectedCategory, onSelectCategory }: CategoryTab
                 ) : (
                   <span className="flex items-center gap-1">
                     {cat.name}
-                    {isAdmin && selectedCategory === cat.id && (
-                      <span className="ml-1 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="icon" variant="ghost" className="h-4 w-4 p-0" onClick={(e) => { e.stopPropagation(); handleEdit(cat); }}>
+                    {isAdmin && (
+                      <span className="ml-0.5 flex items-center gap-0.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                        <Button size="icon" variant="ghost" className="h-5 w-5 sm:h-4 sm:w-4 p-0" onClick={(e) => { e.stopPropagation(); handleEdit(cat); }}>
                           <Pencil className="h-3 w-3" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-4 w-4 p-0 text-destructive" onClick={(e) => { e.stopPropagation(); handleDelete(cat.id); }}>
+                        <Button size="icon" variant="ghost" className="h-5 w-5 sm:h-4 sm:w-4 p-0 text-destructive" onClick={(e) => { e.stopPropagation(); handleDelete(cat.id); }}>
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </span>
@@ -102,7 +102,7 @@ export function CategoryTabs({ selectedCategory, onSelectCategory }: CategoryTab
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="Category name"
-                  className="h-8 w-32 text-xs"
+                  className="h-8 w-32 sm:w-40 text-xs"
                   autoFocus
                   onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                 />
@@ -114,8 +114,8 @@ export function CategoryTabs({ selectedCategory, onSelectCategory }: CategoryTab
                 </Button>
               </div>
             ) : (
-              <Button size="sm" variant="ghost" className="h-8 gap-1 text-xs" onClick={() => setAdding(true)}>
-                <Plus className="h-3 w-3" /> Category
+              <Button size="sm" variant="ghost" className="h-8 gap-1 text-xs sm:text-sm" onClick={() => setAdding(true)}>
+                <Plus className="h-3 w-3" /> <span className="hidden sm:inline">Category</span>
               </Button>
             )}
           </>

@@ -32,33 +32,33 @@ export function AdminPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-6 flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={() => window.location.hash = ''} className="gap-1.5">
-          <ArrowLeft className="h-4 w-4" /> Back
+    <div className="container mx-auto px-4 py-6 sm:py-8">
+      <div className="mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+        <Button variant="ghost" size="sm" onClick={() => window.location.hash = ''} className="gap-1.5 h-8 sm:h-9">
+          <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Back</span>
         </Button>
-        <h2 className="font-display text-2xl font-bold">Admin Portal</h2>
+        <h2 className="font-display text-xl sm:text-2xl font-bold">Admin Portal</h2>
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 sm:gap-4">
         <CategoryTabs selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 w-full sm:w-56"
+              className="pl-9 w-full sm:w-56 h-9 sm:h-10"
             />
           </div>
-          <Button onClick={() => setShowUpload(true)} className="gap-1.5">
-            <Plus className="h-4 w-4" /> Upload
+          <Button onClick={() => setShowUpload(true)} className="gap-1.5 h-9 sm:h-10 w-full sm:w-auto">
+            <Plus className="h-4 w-4" /> <span className="sm:hidden">Upload Certificate</span>
           </Button>
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4 sm:mt-6">
         {isLoading ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 6 }).map((_, i) => (
